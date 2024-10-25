@@ -1,0 +1,76 @@
+services:
+  laravel_app_laravel_docker_test:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    image: laravel_app_laravel_docker_test
+    container_name: laravel_app_laravel_docker_test
+    restart: unless-stopped
+    working_dir: /var/www
+    environment:
+      APP_NAME: laravel_docker_test_network
+      APP_ENV: local
+      APP_KEY: base64:kTOt5GnBOSSgOpfp04+FKe6ZZh5cTbWHIiCDQ/5InWE=
+      APP_DEBUG: true
+      APP_TIMEZONE: Asia/Tehran
+      APP_URL: http://localhost
+      APP_LOCALE: en
+      APP_FALLBACK_LOCALE: en
+      APP_FAKER_LOCALE: en_US
+      APP_MAINTENANCE_DRIVER: file
+      PHP_CLI_SERVER_WORKERS: 4
+      BCRYPT_ROUNDS: 12
+      LOG_CHANNEL: stack
+      LOG_STACK: single
+      LOG_DEPRECATIONS_CHANNEL: null
+      LOG_LEVEL: debug
+      DB_CONNECTION: mysql
+      DB_HOST: mysql_db_laravel_docker_test
+      DB_PORT: 3306
+      DB_DATABASE: laravel_docker_db
+      DB_USERNAME: root
+      DB_PASSWORD: 
+      SESSION_DRIVER: database
+      SESSION_LIFETIME: 120
+      SESSION_ENCRYPT: false
+      SESSION_PATH: /
+      SESSION_DOMAIN: null
+      BROADCAST_CONNECTION: log
+      FILESYSTEM_DISK: local
+      QUEUE_CONNECTION: database
+      CACHE_STORE: database
+      CACHE_PREFIX: 
+      VITE_APP_NAME: "${APP_NAME}"
+    volumes:
+      - ./:/var/www
+    networks:
+     - laravel_docker_test_network
+    depends_on:
+     - mysql_db_laravel_docker_test
+    ports:
+      - "9401:80"
+
+  mysql_db_laravel_docker_test:
+    image: mysql:8.0
+    container_name: mysql_db_laravel_docker_test
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD:
+      MYSQL_DATABASE: laravel_docker_db
+      MYSQL_PASSWORD:
+      MYSQL_ALLOW_EMPTY_PASSWORD: true
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+     - laravel_docker_test_network
+     - phpmyadmin-network
+    ports:
+      - "9898:3306"
+
+networks:
+  laravel_docker_test_network:
+  phpmyadmin-network:
+    driver: bridge
+    external: true
+volumes:
+  db_data:
